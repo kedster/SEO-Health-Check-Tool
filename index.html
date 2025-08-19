@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Health Check Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 SEO Health Check</h1>
+            <p>Analyze your website's SEO performance with real data</p>
+        </div>
+
+        <div class="api-config">
+            <h3>🔑 API Configuration</h3>
+            <p style="margin-bottom: 15px; opacity: 0.8;">Enter your API keys to enable real SEO analysis</p>
+            <div class="api-grid">
+                <div class="api-field">
+                    <label>PageSpeed Insights API Key:</label>
+                    <input type="password" id="pagespeedKey" placeholder="AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw">
+                </div>
+                <div class="api-field">
+                    <label>CORS Proxy URL:</label>
+                    <input type="text" id="proxyUrl" value="https://api.allorigins.win/raw?url=" placeholder="https://cors-anywhere.herokuapp.com/">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="url-input">
+                <input type="url" id="urlInput" placeholder="Enter your website URL (e.g., https://example.com)" />
+                <button class="scan-btn" id="scanBtn" onclick="startSEOCheck()">
+                    Analyze Site
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingDiv">
+            <div class="spinner"></div>
+            <h3>Analyzing your website...</h3>
+            <p id="loadingStatus">Fetching page content...</p>
+        </div>
+
+        <div class="results" id="resultsDiv">
+            <div class="score-header">
+                <div class="overall-score" id="overallScore">0</div>
+                <div class="score-label">SEO Health Score</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="loadTime">0s</div>
+                        <div class="stat-label">Load Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="issuesFound">0</div>
+                        <div class="stat-label">Issues Found</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pageSize">0 KB</div>
+                        <div class="stat-label">Page Size</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="issues-grid" id="issuesGrid">
+                <!-- Issues will be populated here -->
+            </div>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
