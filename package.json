@@ -1,0 +1,48 @@
+{
+  "name": "seo-health-check-tool",
+  "version": "1.0.0",
+  "description": "A comprehensive, open-source web-based SEO analysis tool that empowers website owners, developers, and digital marketers to identify and resolve SEO issues efficiently. Built with modern web technologies, this tool provides instant, actionable insights to improve your website's search engine performance and visibility.",
+  "main": "scripts.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "seo",
+    "website-analysis",
+    "web-development",
+    "performance",
+    "accessibility"
+  ],
+  "author": "",
+  "license": "MIT",
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.(js|jsx)",
+      "**/?(*.)(test|spec).(js|jsx)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "scripts.js",
+      "!node_modules/**",
+      "!tests/**",
+      "!coverage/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^30.1.3",
+    "jest-environment-jsdom": "^30.1.2",
+    "jsdom": "^27.0.0"
+  }
+}
