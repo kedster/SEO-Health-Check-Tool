@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test
+
+    - name: Build project
+      run: npm run build --if-present
+
+    - name: Create release archive
+      run: |
+        mkdir -p release
+        cp -r *.html *.css *.js src/ package.json README.md LICENSE release/ 2>/dev/null || true
+        tar -czf seo-health-check-tool-${GITHUB_REF#refs/tags/}.tar.gz -C release .
+        zip -r seo-health-check-tool-${GITHUB_REF#refs/tags/}.zip release/
+
+    - name: Generate changelog
+      id: changelog
+      uses: mikepenz/release-changelog-builder-action@v4
+      with:
+        configuration: |
+          {
+            "categories": [
+              {
+                "title": "## 🚀 Features",
+                "labels": ["feature", "enhancement"]
+              },
+              {
+                "title": "## 🐛 Bug Fixes",
+                "labels": ["bug", "fix"]
+              },
+              {
+                "title": "## 🔧 Maintenance",
+                "labels": ["chore", "dependencies"]
+              }
+            ]
+          }
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        body: ${{ steps.changelog.outputs.changelog }}
+        files: |
+          seo-health-check-tool-*.tar.gz
+          seo-health-check-tool-*.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
