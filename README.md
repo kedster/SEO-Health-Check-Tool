@@ -308,6 +308,36 @@ We welcome contributions from developers of all skill levels! This project thriv
 - Add **descriptive comments** for complex logic
 - Use **meaningful variable names**
 
+#### Unit Testing
+This project uses **Jest** for comprehensive testing. All core SEO analysis functions are thoroughly tested.
+
+**Running Tests:**
+```bash
+# Install dependencies (first time only)
+npm install
+
+# Run all tests
+npm test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+**Test Structure:**
+- `tests/__tests__/analyzeHTML.test.js` - Core SEO analysis functions
+- `tests/__tests__/utilityFunctions.test.js` - URL validation and scoring
+- `tests/__tests__/integration.test.js` - Full workflow testing
+- `src/seoAnalyzer.js` - Testable modular functions
+
+**Writing Tests:**
+- Add unit tests for new SEO analysis features
+- Test edge cases and error conditions
+- Maintain high test coverage (aim for >90%)
+- Use descriptive test names and clear assertions
+
 #### Testing Your Changes
 1. **Test locally** using a web server:
    ```bash
