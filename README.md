@@ -52,10 +52,18 @@ The SEO Health Check Tool is designed to democratize SEO analysis by providing a
 
 **Try it now:** [SEO Health Check Tool Demo](https://kedster.github.io/SEO-Health-Check-Tool/)
 
+![SEO Health Check Interface](https://github.com/user-attachments/assets/0d6f52cb-8012-45b1-ba69-25e518877573)
+
 Test the tool with these example URLs:
 - `https://example.com` - Basic website structure
 - `https://github.com` - Complex modern website
 - `https://developer.mozilla.org` - Technical documentation site
+
+### 📊 Sample Results
+
+![SEO Analysis Results](https://github.com/user-attachments/assets/f7cc3481-622c-41ec-8774-62a7ba1772d2)
+
+*Example analysis showing SEO score of 84/100 with 2 issues found: Multiple H1 tags and missing image alt text*
 
 ### Prerequisites
 
@@ -153,6 +161,52 @@ Simply visit the [live demo](https://kedster.github.io/SEO-Health-Check-Tool/) -
    - Priority is indicated by issue type (Critical vs Warning)
    - Use the actionable advice to improve your website's SEO
 
+### Code Examples for Common SEO Fixes
+
+#### Title Tag Optimization
+```html
+<!-- ❌ Poor title -->
+<title>Home</title>
+
+<!-- ✅ Optimized title (50-60 characters) -->
+<title>SEO Health Check Tool - Free Website Analysis & Optimization</title>
+```
+
+#### Meta Description
+```html
+<!-- ❌ Missing meta description -->
+<head>
+  <title>My Website</title>
+</head>
+
+<!-- ✅ Proper meta description (150-160 characters) -->
+<head>
+  <title>My Website</title>
+  <meta name="description" content="Comprehensive SEO analysis tool that helps identify and fix website optimization issues. Get actionable insights to improve your search rankings instantly.">
+</head>
+```
+
+#### Heading Structure
+```html
+<!-- ❌ Multiple H1 tags -->
+<h1>Welcome</h1>
+<h1>About Us</h1>
+
+<!-- ✅ Proper heading hierarchy -->
+<h1>Welcome to Our Website</h1>
+<h2>About Us</h2>
+<h3>Our Mission</h3>
+```
+
+#### Image Alt Text
+```html
+<!-- ❌ Missing alt text -->
+<img src="product.jpg">
+
+<!-- ✅ Descriptive alt text -->
+<img src="product.jpg" alt="Blue wireless headphones with noise cancellation feature">
+```
+
 ### Example Analysis Results
 
 After analyzing a website, you might see results like:
@@ -183,15 +237,48 @@ After analyzing a website, you might see results like:
 ├── index.html          # Main application interface
 ├── scripts.js          # Core analysis logic and API integrations
 ├── styles.css          # Modern responsive styling
+├── src/
+│   └── seoAnalyzer.js  # Modular SEO analysis functions
+├── tests/              # Jest test suite
 └── README.md          # Project documentation
 ```
 
 ### Key Components
 - **`startSEOCheck()`** - Main entry point for analysis
-- **`analyzeHTML()`** - HTML structure and content analysis
-- **`analyzePageSpeed()`** - Performance metrics via PageSpeed API
-- **`checkLinks()`** - Broken link detection
-- **`displayResults()`** - Results rendering and UI updates
+- **`analyzeHTML(html, url)`** - HTML structure and content analysis
+- **`analyzePageSpeed(url, apiKey)`** - Performance metrics via PageSpeed API
+- **`checkLinks(doc, baseUrl)`** - Broken link detection
+- **`displayResults(data)`** - Results rendering and UI updates
+
+### Adding New SEO Checks
+
+To extend the tool with new SEO analysis features:
+
+```javascript
+// 1. Add check function to src/seoAnalyzer.js
+function checkOpenGraphTags(doc) {
+  const issues = [];
+  const ogTitle = doc.querySelector('meta[property="og:title"]');
+  
+  if (!ogTitle) {
+    issues.push({
+      type: 'warning',
+      title: '📱 Missing Open Graph Title',
+      description: 'No og:title meta tag found.',
+      guidance: 'Add <meta property="og:title" content="Your Title"> for better social media sharing.'
+    });
+  }
+  
+  return issues;
+}
+
+// 2. Integrate into analyzeHTML function
+function analyzeHTML(html, url) {
+  // ... existing checks
+  issues.push(...checkOpenGraphTags(doc));
+  return issues;
+}
+```
 
 ## 🎯 SEO Checks Performed
 
@@ -212,24 +299,64 @@ After analyzing a website, you might see results like:
 ### Common Issues
 
 **"CORS Error" when analyzing websites:**
-- **Solution**: Use the provided CORS proxy or configure your own
+```
+Error: Failed to fetch
+Access to fetch at 'https://example.com' from origin 'http://localhost:8000' has been blocked by CORS policy
+```
+- **Solution**: Use the provided CORS proxy (default: `https://api.allorigins.win/raw?url=`)
 - **Alternative**: Run the tool on a local server (not file:// protocol)
 - **Note**: Some websites block cross-origin requests for security
 
 **"API Key Invalid" for PageSpeed Insights:**
-- **Check**: Ensure your API key is correctly copied
-- **Verify**: API is enabled in Google Cloud Console
-- **Quota**: Make sure you haven't exceeded daily API limits
+- **Check**: Ensure your API key is correctly copied (format: `AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw`)
+- **Verify**: API is enabled in [Google Cloud Console](https://console.cloud.google.com/apis/library/pagespeedonline.googleapis.com)
+- **Quota**: Make sure you haven't exceeded daily API limits (400 queries/day free)
 
 **Tool not loading or JavaScript errors:**
-- **Browser**: Use a modern browser (Chrome, Firefox, Safari, Edge)
+- **Browser**: Use a modern browser (Chrome 60+, Firefox 55+, Safari 12+, Edge 79+)
 - **JavaScript**: Ensure JavaScript is enabled
-- **Console**: Check browser developer console for error messages
+- **Console**: Check browser developer console (F12) for error messages
 
 **Analysis takes too long or times out:**
 - **Network**: Check your internet connection
 - **Website**: Target site might be slow or unresponsive
 - **Retry**: Try analyzing the same URL again
+- **Test**: Use `https://example.com` to verify tool functionality
+
+### Development Setup
+
+**For Contributors:**
+```bash
+# 1. Clone the repository
+git clone https://github.com/kedster/SEO-Health-Check-Tool.git
+cd SEO-Health-Check-Tool
+
+# 2. Install test dependencies
+npm install
+
+# 3. Run tests
+npm test
+
+# 4. Start development server
+python -m http.server 8000
+# or
+npx serve . -p 8000
+
+# 5. Open browser
+# Navigate to http://localhost:8000
+```
+
+**Running Tests:**
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+```
 
 ### Performance Tips
 
@@ -289,16 +416,19 @@ We welcome contributions from developers of all skill levels! This project thriv
 ### Development Guidelines
 
 #### Getting Started
-1. **Fork the repository** on GitHub
-2. **Clone your fork** locally:
-   ```bash
-   git clone https://github.com/yourusername/SEO-Health-Check-Tool.git
-   cd SEO-Health-Check-Tool
-   ```
-3. **Create a feature branch**:
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
+```bash
+# 1. Fork the repository on GitHub
+# 2. Clone your fork locally
+git clone https://github.com/yourusername/SEO-Health-Check-Tool.git
+cd SEO-Health-Check-Tool
+
+# 3. Create a feature branch
+git checkout -b feature/amazing-feature
+
+# 4. Install dependencies and start development
+npm install
+python -m http.server 8000
+```
 
 #### Code Style
 - Use **ES6+** JavaScript features
@@ -308,82 +438,63 @@ We welcome contributions from developers of all skill levels! This project thriv
 - Add **descriptive comments** for complex logic
 - Use **meaningful variable names**
 
-#### Unit Testing
-This project uses **Jest** for comprehensive testing. All core SEO analysis functions are thoroughly tested.
+#### Adding New SEO Checks
+```javascript
+// Example: Adding a meta keywords check
+function checkMetaKeywords(doc) {
+  const issues = [];
+  const metaKeywords = doc.querySelector('meta[name="keywords"]');
+  
+  if (!metaKeywords) {
+    issues.push({
+      type: 'warning',
+      title: '🏷️ Missing Meta Keywords',
+      description: 'No meta keywords found.',
+      guidance: 'Add relevant keywords: <meta name="keywords" content="seo, website, analysis">'
+    });
+  }
+  
+  return issues;
+}
 
-**Running Tests:**
-```bash
-# Install dependencies (first time only)
-npm install
-
-# Run all tests
-npm test
-
-# Run tests in watch mode (for development)
-npm run test:watch
-
-# Run tests with coverage report
-npm run test:coverage
+// Add to analyzeHTML function
+issues.push(...checkMetaKeywords(doc));
 ```
 
-**Test Structure:**
-- `tests/__tests__/analyzeHTML.test.js` - Core SEO analysis functions
-- `tests/__tests__/utilityFunctions.test.js` - URL validation and scoring
-- `tests/__tests__/integration.test.js` - Full workflow testing
-- `src/seoAnalyzer.js` - Testable modular functions
-
-**Writing Tests:**
-- Add unit tests for new SEO analysis features
-- Test edge cases and error conditions
-- Maintain high test coverage (aim for >90%)
-- Use descriptive test names and clear assertions
-
 #### Testing Your Changes
-1. **Test locally** using a web server:
-   ```bash
-   python -m http.server 8000
-   # or
-   npx serve .
-   ```
-2. **Test multiple browsers** when possible
-3. **Test different website types** (large/small, different CMS)
-4. **Verify API integration** works correctly
-5. **Check mobile responsiveness**
+```bash
+# Run unit tests
+npm test
+
+# Test in browser
+# 1. Start server: python -m http.server 8000
+# 2. Test URLs: https://example.com, https://github.com
+# 3. Check console for errors
+```
 
 #### Submitting Changes
-1. **Test thoroughly** - Ensure your changes don't break existing functionality
-2. **Write descriptive commit messages**:
-   ```bash
-   git commit -m "Add: New SEO check for Open Graph tags
-   
-   - Detects missing og:title, og:description, og:image
-   - Provides specific guidance for social media optimization
-   - Adds warning-level issues for missing Open Graph data"
-   ```
-3. **Push to your branch**:
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-4. **Create a Pull Request** with:
-   - Clear title and description
-   - Screenshots for UI changes
-   - List of changes made
-   - Testing steps performed
+```bash
+# 1. Test thoroughly
+npm test
 
-#### Pull Request Guidelines
+# 2. Commit with clear message
+git add .
+git commit -m "Add: Meta keywords SEO check
+
+- Detects missing meta keywords tag
+- Provides guidance for keyword optimization
+- Includes unit tests for validation"
+
+# 3. Push and create PR
+git push origin feature/amazing-feature
+```
+
+### Pull Request Guidelines
 - **One feature per PR** - Keep changes focused
 - **Update documentation** if needed
 - **Test on multiple browsers** when possible
 - **Follow existing code patterns**
 - **Be responsive to feedback**
-
-### Development Setup
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and test thoroughly
-4. Commit your changes: `git commit -m 'Add amazing feature'`
-5. Push to your branch: `git push origin feature/amazing-feature`
-6. Open a Pull Request
 
 ## 📝 License
 
