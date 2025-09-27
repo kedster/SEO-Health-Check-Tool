@@ -85,20 +85,27 @@
         }
 
         async function fetchPageContent(url) {
-            const proxyUrl = document.getElementById('proxyUrl').value;
-            
             // Demo mode for testing - if URL contains 'demo' or 'test'
             if (url.toLowerCase().includes('demo') || url.toLowerCase().includes('test')) {
                 return getDemoContent(url);
             }
             
             try {
-                const response = await fetch(proxyUrl + encodeURIComponent(url));
+                // Use backend API to fetch content (handles CORS automatically)
+                const response = await fetch('/api/fetch-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+                
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`Backend fetch failed: ${response.status}`);
                 }
-                const html = await response.text();
-                return { html, status: response.status };
+                
+                const data = await response.json();
+                return { html: data.html, status: data.status };
             } catch (error) {
                 // Fallback to demo content if fetching fails
                 console.warn('External fetch failed, using demo content for testing:', error);
@@ -376,13 +383,20 @@
 
             for (const link of linksToCheck) {
                 try {
-                    const proxyUrl = document.getElementById('proxyUrl').value;
-                    const response = await fetch(proxyUrl + encodeURIComponent(link), {
-                        method: 'HEAD'
+                    // Use backend API to check links (handles CORS automatically)
+                    const response = await fetch('/api/check-link', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: link })
                     });
                     
-                    if (!response.ok && response.status >= 400) {
-                        brokenLinks.push(link);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (!data.ok && data.status >= 400) {
+                            brokenLinks.push(link);
+                        }
                     }
                 } catch (error) {
                     console.warn('Could not check link:', link, error);

@@ -33,50 +33,6 @@
             opacity: 0.9;
         }
 
-        .cors-config {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            color: white;
-        }
-
-        .cors-config h3 {
-            margin-bottom: 15px;
-        }
-
-        .api-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-        }
-
-        .api-field {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .api-field label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .api-field input {
-            padding: 10px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 14px;
-        }
-
-        .api-field input::placeholder {
-            color: rgba(255,255,255,0.7);
-        }
-
         .input-section {
             background: white;
             border-radius: 20px;
