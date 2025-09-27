@@ -2,8 +2,10 @@
   "name": "seo-health-check-tool",
   "version": "1.0.0",
   "description": "A comprehensive, open-source web-based SEO analysis tool that empowers website owners, developers, and digital marketers to identify and resolve SEO issues efficiently. Built with modern web technologies, this tool provides instant, actionable insights to improve your website's search engine performance and visibility.",
-  "main": "scripts.js",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -39,6 +41,11 @@
       "lcov",
       "html"
     ]
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "jest": "^30.1.3",

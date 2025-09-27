@@ -85,20 +85,27 @@
         }
 
         async function fetchPageContent(url) {
-            const proxyUrl = document.getElementById('proxyUrl').value;
-            
             // Demo mode for testing - if URL contains 'demo' or 'test'
             if (url.toLowerCase().includes('demo') || url.toLowerCase().includes('test')) {
                 return getDemoContent(url);
             }
             
             try {
-                const response = await fetch(proxyUrl + encodeURIComponent(url));
+                // Use backend API to fetch content (handles CORS automatically)
+                const response = await fetch('/api/fetch-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+                
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`Backend fetch failed: ${response.status}`);
                 }
-                const html = await response.text();
-                return { html, status: response.status };
+                
+                const data = await response.json();
+                return { html: data.html, status: data.status };
             } catch (error) {
                 // Fallback to demo content if fetching fails
                 console.warn('External fetch failed, using demo content for testing:', error);
@@ -185,18 +192,20 @@
         }
 
         async function analyzePageSpeed(url) {
-            const apiKey = document.getElementById('pagespeedKey').value;
-            
-            if (!apiKey || apiKey === 'AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw') {
-                return null; // Skip if no real API key
-            }
-
             try {
-                const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=${apiKey}&strategy=desktop`;
-                const response = await fetch(apiUrl);
+                // Use the backend API endpoint instead of directly calling PageSpeed API
+                const response = await fetch('/api/pagespeed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
                 
                 if (!response.ok) {
-                    throw new Error('PageSpeed API request failed');
+                    // If backend API fails, return null to skip PageSpeed analysis
+                    console.warn('PageSpeed API unavailable, skipping performance analysis');
+                    return null;
                 }
 
                 const data = await response.json();
@@ -233,7 +242,7 @@
                 };
 
             } catch (error) {
-                console.error('PageSpeed analysis failed:', error);
+                console.warn('PageSpeed analysis failed, skipping performance metrics:', error);
                 return null;
             }
         }
@@ -374,13 +383,20 @@
 
             for (const link of linksToCheck) {
                 try {
-                    const proxyUrl = document.getElementById('proxyUrl').value;
-                    const response = await fetch(proxyUrl + encodeURIComponent(link), {
-                        method: 'HEAD'
+                    // Use backend API to check links (handles CORS automatically)
+                    const response = await fetch('/api/check-link', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: link })
                     });
                     
-                    if (!response.ok && response.status >= 400) {
-                        brokenLinks.push(link);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (!data.ok && data.status >= 400) {
+                            brokenLinks.push(link);
+                        }
                     }
                 } catch (error) {
                     console.warn('Could not check link:', link, error);
