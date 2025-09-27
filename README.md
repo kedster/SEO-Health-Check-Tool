@@ -49,34 +49,65 @@ The SEO Health Check Tool is designed to democratize SEO analysis by providing a
 
 ## 🚀 Getting Started
 
+### 🌟 Recommended: Deploy with Cloudflare Pages
+
+For the best performance and reliability, deploy this tool using Cloudflare Pages with built-in Functions:
+
+1. **[Deploy to Cloudflare Pages](https://dash.cloudflare.com/sign-up/pages)** - Connect your GitHub fork
+2. **Configure environment variables** - Add your PageSpeed API key
+3. **Go live instantly** - Global CDN with automatic HTTPS
+
+📖 **[Full Deployment Guide](DEPLOYMENT.md)** - Complete setup instructions
+
 ### 🎮 Live Demo
 
-**Try it now:** [SEO Health Check Tool Demo](https://kedster.github.io/SEO-Health-Check-Tool/)
+**Try it now:** [SEO Health Check Tool](https://kedster.github.io/SEO-Health-Check-Tool/)
 
 ![SEO Health Check Interface](https://github.com/user-attachments/assets/0d6f52cb-8012-45b1-ba69-25e518877573)
 
-Test the tool with these example URLs:
-- `https://example.com` - Basic website structure
+Test the tool with any valid website URL:
 - `https://github.com` - Complex modern website
 - `https://developer.mozilla.org` - Technical documentation site
+- Any website you want to analyze
 
 ### 📊 Sample Results
 
 ![SEO Analysis Results](https://github.com/user-attachments/assets/f7cc3481-622c-41ec-8774-62a7ba1772d2)
 
-*Example analysis showing SEO score of 84/100 with 2 issues found: Multiple H1 tags and missing image alt text*
+*Example analysis showing SEO score with identified issues and actionable recommendations*
 
 ### Prerequisites
 
 - **Modern web browser** with JavaScript enabled
   - Chrome 60+ / Firefox 55+ / Safari 12+ / Edge 79+
 - **Internet connection** for fetching web pages and API calls
+- **Required**: Live backend services (Cloudflare Pages Functions or Node.js server)
 - **Optional**: [Google PageSpeed Insights API key](https://console.cloud.google.com/) for enhanced performance analysis
-- **Optional**: CORS proxy for analyzing restricted websites
+
+> ⚠️ **Important**: This tool requires live backend services. Static-only hosting will not work as it needs server-side API calls to avoid CORS issues.
 
 ### Installation Options
 
-#### Option 1: Run with Backend (Recommended)
+#### Option 1: Cloudflare Pages (Recommended)
+Deploy with built-in Functions for best performance and reliability:
+
+```bash
+# 1. Fork this repository to your GitHub account
+# 2. Connect to Cloudflare Pages
+# 3. Set PAGESPEED_API_KEY environment variable
+# 4. Deploy automatically
+```
+
+📖 **[Complete Cloudflare Pages Setup Guide](DEPLOYMENT.md)**
+
+**Benefits:**
+- ✅ No CORS issues - Functions handle API calls server-side
+- ✅ Global CDN - Lightning fast worldwide
+- ✅ Auto HTTPS - SSL certificates included
+- ✅ Secure API keys - Environment variables protected
+
+#### Option 2: Local Development (Node.js)
+For development and testing:
 1. **Download the latest release** or clone the repository:
    ```bash
    git clone https://github.com/kedster/SEO-Health-Check-Tool.git
@@ -104,36 +135,14 @@ Test the tool with these example URLs:
 
 5. **Open in browser**: Navigate to `http://localhost:3000`
 
-#### Option 2: Static Frontend Only
-If you prefer to run without the backend (limited functionality):
-
-1. **Start a local web server** (required for proper functionality):
-   
-   **Using Python 3:**
-   ```bash
-   python -m http.server 8000
-   ```
-   
-   **Using Node.js:**
-   ```bash
-   # Install serve globally (one time)
-   npm install -g serve
-   
-   # Run the server
-   serve . -p 8000
-   ```
-
-2. **Open in browser**: Navigate to `http://localhost:8000`
-
-#### Option 3: GitHub Pages (Hosted Version)
-Simply visit the [live demo](https://kedster.github.io/SEO-Health-Check-Tool/) - no installation required!
+> ⚠️ **Note**: Static hosting (without backend) is not supported as this tool requires server-side API calls to function properly.
 
 ### API Setup (Handled by Backend)
-The application now includes a secure backend service that handles API keys:
+The application includes secure backend services that handle API keys:
 
 1. Get a Google PageSpeed Insights API key from [Google Cloud Console](https://console.cloud.google.com/)
 2. Enable the PageSpeed Insights API for your project  
-3. Set the `PAGESPEED_API_KEY` environment variable or update `.env` file
+3. Set the `PAGESPEED_API_KEY` environment variable (Cloudflare Pages) or update `.env` file (Node.js)
 4. The backend securely handles all API requests without exposing keys to the frontend
 
 ## 💻 Usage

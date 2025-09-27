@@ -1,0 +1,100 @@
+/**
+ * Cloudflare Pages Function for PageSpeed Insights API
+ * Replaces the Express.js /api/pagespeed endpoint
+ */
+
+export default async function handler(request, env, context) {
+    // Handle CORS preflight requests
+    if (request.method === 'OPTIONS') {
+        return new Response(null, {
+            status: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type',
+            },
+        });
+    }
+
+    if (request.method !== 'POST') {
+        return new Response('Method not allowed', { 
+            status: 405,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            }
+        });
+    }
+
+    try {
+        const { url } = await request.json();
+        
+        if (!url) {
+            return new Response(JSON.stringify({ error: 'URL is required' }), {
+                status: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            });
+        }
+
+        // Validate URL format
+        try {
+            new URL(url);
+        } catch (error) {
+            return new Response(JSON.stringify({ error: 'Invalid URL format' }), {
+                status: 400,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            });
+        }
+
+        // Get API key from environment variables (set in Cloudflare Pages settings)
+        const PAGESPEED_API_KEY = env.PAGESPEED_API_KEY;
+        
+        if (!PAGESPEED_API_KEY) {
+            return new Response(JSON.stringify({ 
+                error: 'PageSpeed API key not configured' 
+            }), {
+                status: 500,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+            });
+        }
+
+        // Make request to PageSpeed Insights API
+        const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=${PAGESPEED_API_KEY}&strategy=desktop`;
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            throw new Error(`PageSpeed API request failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        return new Response(JSON.stringify(data), {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+        });
+        
+    } catch (error) {
+        console.error('PageSpeed API error:', error);
+        return new Response(JSON.stringify({ 
+            error: 'Failed to analyze page speed',
+            details: error.message 
+        }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+        });
+    }
+}
