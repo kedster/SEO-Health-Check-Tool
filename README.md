@@ -8,8 +8,8 @@ The SEO Health Check Tool is designed to democratize SEO analysis by providing a
 
 ### Why Choose This Tool?
 
-- **🚀 Zero Installation Required** - Runs directly in your browser
-- **🔒 Privacy-First** - All analysis happens client-side
+- **🚀 Zero Installation Required** - Runs directly in your browser or with simple Node.js backend
+- **🔒 Privacy-First & Secure** - API keys stored securely on backend, no sensitive data exposed
 - **💰 Cost-Effective** - Free alternative to expensive SEO audit tools
 - **🎯 Actionable Results** - Specific recommendations, not just problems
 - **📱 Mobile-Friendly** - Responsive design works on all devices
@@ -34,6 +34,7 @@ The SEO Health Check Tool is designed to democratize SEO analysis by providing a
 - **Structured Data Detection** - Identifies Schema.org markup
 
 ### Performance Integration
+- **Secure Backend API** - API keys safely stored server-side, never exposed to frontend
 - **Google PageSpeed Insights API** integration for real-time performance metrics
 - **Load Time Analysis** - Measures and reports page loading speed
 - **Page Size Monitoring** - Tracks total page weight
@@ -44,7 +45,7 @@ The SEO Health Check Tool is designed to democratize SEO analysis by providing a
 - **Issue Categorization** - Critical and warning level classifications
 - **Actionable Guidance** - Specific recommendations for each issue
 - **Responsive Design** - Modern gradient UI that works on all devices
-- **API Configuration** - Easy setup for PageSpeed Insights integration
+- **Secure Configuration** - No API keys exposed in frontend
 
 ## 🚀 Getting Started
 
@@ -75,23 +76,42 @@ Test the tool with these example URLs:
 
 ### Installation Options
 
-#### Option 1: Download and Run Locally
+#### Option 1: Run with Backend (Recommended)
 1. **Download the latest release** or clone the repository:
    ```bash
    git clone https://github.com/kedster/SEO-Health-Check-Tool.git
    cd SEO-Health-Check-Tool
    ```
 
-2. **Start a local web server** (required for proper functionality):
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure API key (optional):**
+   ```bash
+   # Copy environment template
+   cp .env.example .env
+   
+   # Edit .env and add your PageSpeed API key
+   # PAGESPEED_API_KEY=your_actual_api_key_here
+   ```
+
+4. **Start the server:**
+   ```bash
+   npm start
+   ```
+
+5. **Open in browser**: Navigate to `http://localhost:3000`
+
+#### Option 2: Static Frontend Only
+If you prefer to run without the backend (limited functionality):
+
+1. **Start a local web server** (required for proper functionality):
    
    **Using Python 3:**
    ```bash
    python -m http.server 8000
-   ```
-   
-   **Using Python 2:**
-   ```bash
-   python -m SimpleHTTPServer 8000
    ```
    
    **Using Node.js:**
@@ -102,31 +122,19 @@ Test the tool with these example URLs:
    # Run the server
    serve . -p 8000
    ```
-   
-   **Using PHP:**
-   ```bash
-   php -S localhost:8000
-   ```
-   
-   **Using Live Server (VS Code):**
-   - Install "Live Server" extension
-   - Right-click `index.html` → "Open with Live Server"
 
-3. **Open in browser**: Navigate to `http://localhost:8000`
+2. **Open in browser**: Navigate to `http://localhost:8000`
 
-#### Option 2: GitHub Pages (Hosted Version)
+#### Option 3: GitHub Pages (Hosted Version)
 Simply visit the [live demo](https://kedster.github.io/SEO-Health-Check-Tool/) - no installation required!
 
-#### Option 3: Deploy to Your Server
-1. Upload all files to your web server
-2. Ensure your server supports serving static HTML files
-3. Access via your domain (e.g., `https://yourdomain.com/seo-tool/`)
+### API Setup (Handled by Backend)
+The application now includes a secure backend service that handles API keys:
 
-### API Setup (Optional but Recommended)
 1. Get a Google PageSpeed Insights API key from [Google Cloud Console](https://console.cloud.google.com/)
-2. Enable the PageSpeed Insights API for your project
-3. Enter your API key in the tool's configuration section
-4. Configure a CORS proxy URL if needed (default provided)
+2. Enable the PageSpeed Insights API for your project  
+3. Set the `PAGESPEED_API_KEY` environment variable or update `.env` file
+4. The backend securely handles all API requests without exposing keys to the frontend
 
 ## 💻 Usage
 
