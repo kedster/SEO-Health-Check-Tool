@@ -185,18 +185,20 @@
         }
 
         async function analyzePageSpeed(url) {
-            const apiKey = document.getElementById('pagespeedKey').value;
-            
-            if (!apiKey || apiKey === 'AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw') {
-                return null; // Skip if no real API key
-            }
-
             try {
-                const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=${apiKey}&strategy=desktop`;
-                const response = await fetch(apiUrl);
+                // Use the backend API endpoint instead of directly calling PageSpeed API
+                const response = await fetch('/api/pagespeed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
                 
                 if (!response.ok) {
-                    throw new Error('PageSpeed API request failed');
+                    // If backend API fails, return null to skip PageSpeed analysis
+                    console.warn('PageSpeed API unavailable, skipping performance analysis');
+                    return null;
                 }
 
                 const data = await response.json();
@@ -233,7 +235,7 @@
                 };
 
             } catch (error) {
-                console.error('PageSpeed analysis failed:', error);
+                console.warn('PageSpeed analysis failed, skipping performance metrics:', error);
                 return null;
             }
         }
