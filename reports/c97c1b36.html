@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Report for test.com - Score: 52/100</title>
+    <meta name="description" content="SEO Health Check report for test.com. Current score: 52/100 with 6 issues found.">
+    <meta name="robots" content="index,follow">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .report-header { text-align: center; margin: 2rem 0; }
+        .domain-title { font-size: 2.5rem; color: #333; margin-bottom: 0.5rem; }
+        .last-updated { color: #666; font-size: 1rem; }
+        .backlink-section { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 2rem; 
+            margin: 2rem 0; 
+            border-radius: 10px; 
+            text-align: center; 
+        }
+        .backlink-section a { 
+            color: white; 
+            text-decoration: none; 
+            font-weight: bold; 
+            border: 2px solid white; 
+            padding: 0.8rem 1.5rem; 
+            border-radius: 5px; 
+            display: inline-block; 
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        .backlink-section a:hover { 
+            background: white; 
+            color: #667eea; 
+        }
+        .history-section { margin: 2rem 0; }
+        .history-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .chart-container { margin: 2rem 0; text-align: center; }
+        .recent-reports { margin-top: 2rem; }
+        .history-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 0.5rem; 
+            border-bottom: 1px solid #eee; 
+        }
+        .history-score { font-weight: bold; color: #667eea; }
+        @media (max-width: 768px) {
+            .domain-title { font-size: 2rem; }
+            .history-stats { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="report-header">
+            <h1 class="domain-title">📊 test.com</h1>
+            <p class="last-updated">Last analyzed: 9/28/2025, 4:49:34 PM</p>
+        </div>
+        
+        <div class="backlink-section">
+            <h2>🔍 Free SEO Health Check Tool</h2>
+            <p>This report was generated using our free SEO analysis tool. 
+            Get your own website analyzed and improve your search rankings!</p>
+            <a href="/" rel="dofollow" title="Free SEO Health Check Tool - Analyze your website">
+                🚀 Analyze Your Website - Free SEO Check (Score: 52/100)
+            </a>
+        </div>
+
+        <div class="results">
+            <div class="score-header">
+                <div class="overall-score">52</div>
+                <div class="score-label">SEO Health Score</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">Unknown</div>
+                        <div class="stat-label">Load Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Issues Found</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0 KB</div>
+                        <div class="stat-label">Page Size</div>
+                    </div>
+                </div>
+            </div>
+
+            
+                <div class="issues-grid">
+                    
+        <div class="issue-card warning">
+            <div class="issue-header">
+                ⚠️ Title Tag Length Issue
+            </div>
+            <div class="issue-body">
+                <div class="issue-description">
+                    Title tag is 15 characters. Optimal length is 50-60 characters.
+                </div>
+                <div class="guidance">💡 Adjust title tag length to 50-60 characters for better search result display.</div>
+            </div>
+        </div>
+    
+        <div class="issue-card warning">
+            <div class="issue-header">
+                📝 Meta Description Length Issue
+            </div>
+            <div class="issue-body">
+                <div class="issue-description">
+                    Meta description is 52 characters. Optimal length is 150-160 characters.
+                </div>
+                <div class="guidance">💡 Adjust meta description length to 150-160 characters for better search snippets.</div>
+            </div>
+        </div>
+    
+        <div class="issue-card warning">
+            <div class="issue-header">
+                ⚠️ Multiple H1 Tags
+            </div>
+            <div class="issue-body">
+                <div class="issue-description">
+                    Found 2 H1 tags. Best practice is to use only one H1 per page.
+                </div>
+                <div class="guidance">💡 Use only one H1 tag per page and structure other headings with H2-H6.</div>
+            </div>
+        </div>
+    
+        <div class="issue-card warning">
+            <div class="issue-header">
+                🖼️ Images Missing Alt Text
+            </div>
+            <div class="issue-body">
+                <div class="issue-description">
+                    1 images are missing alt text attributes.
+                </div>
+                <div class="guidance">💡 Add descriptive alt text to all images for accessibility and SEO benefits.</div>
+            </div>
+        </div>
+    
+        <div class="issue-card warning">
+            <div class="issue-header">
+                🔗 Missing Canonical URL
+            </div>
+            <div class="issue-body">
+                <div class="issue-description">
+                    No canonical URL specified for this page.
+                </div>
+                <div class="guidance">💡 Add a canonical link tag to prevent duplicate content issues.</div>
+            </div>
+        </div>
+    
+        <div class="issue-card warning">
+            <div class="issue-header">
+                📊 Missing Structured Data
+            </div>
+            <div class="issue-body">
+                <div class="issue-description">
+                    No structured data (Schema.org) markup found.
+                </div>
+                <div class="guidance">💡 Add JSON-LD structured data to help search engines understand your content better.</div>
+            </div>
+        </div>
+    
+                </div>
+            
+            
+            
+        </div>
+    </div>
+    
+    
+</body>
+</html>
