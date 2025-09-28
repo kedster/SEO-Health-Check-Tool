@@ -10,13 +10,14 @@ export default async function handler(request, env, context) {
             status: 200,
             headers: {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
             },
         });
     }
 
-    if (request.method !== 'POST') {
+    // Support both GET and POST methods for flexibility
+    if (request.method !== 'POST' && request.method !== 'GET') {
         return new Response('Method not allowed', { 
             status: 405,
             headers: {
@@ -26,7 +27,26 @@ export default async function handler(request, env, context) {
     }
 
     try {
-        const { url } = await request.json();
+        let url;
+        
+        // Handle both GET and POST requests
+        if (request.method === 'GET') {
+            const urlParams = new URL(request.url).searchParams;
+            url = urlParams.get('url');
+        } else {
+            try {
+                const body = await request.json();
+                url = body.url;
+            } catch (jsonError) {
+                return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+                    status: 400,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                });
+            }
+        }
         
         if (!url) {
             return new Response(JSON.stringify({ error: 'URL is required' }), {
