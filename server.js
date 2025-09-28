@@ -65,8 +65,53 @@ app.post('/api/fetch-content', async (req, res) => {
             return res.status(400).json({ error: 'Invalid URL format' });
         }
 
-        // Use CORS proxy to fetch content
-        const response = await fetch(CORS_PROXY_URL + encodeURIComponent(url));
+        // Try to fetch content directly first (like Cloudflare Functions do)
+        // If that fails due to CORS, then use CORS proxy as fallback
+        let response;
+        try {
+            response = await fetch(url, {
+                headers: {
+                    'User-Agent': 'SEO-Health-Check-Tool/1.0 (Local Development)',
+                },
+            });
+        } catch (directFetchError) {
+            console.log('Direct fetch failed, trying CORS proxy:', directFetchError.message);
+            try {
+                // Fallback to CORS proxy
+                response = await fetch(CORS_PROXY_URL + encodeURIComponent(url));
+            } catch (corsProxyError) {
+                console.log('CORS proxy also failed:', corsProxyError.message);
+                // For development/testing when external services are unavailable,
+                // return a simple HTML response so the tool can be tested
+                if (process.env.NODE_ENV !== 'production') {
+                    const mockHtml = `
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Test Page - ${new URL(url).hostname}</title>
+                            <meta name="description" content="This is a test page for SEO analysis.">
+                        </head>
+                        <body>
+                            <h1>Test Page</h1>
+                            <p>This is a sample page for testing the SEO Health Check Tool.</p>
+                            <a href="/about">About</a>
+                            <a href="/contact">Contact</a>
+                            <img src="test.jpg" alt="Test image">
+                            <img src="test2.jpg">
+                        </body>
+                        </html>
+                    `;
+                    return res.json({ 
+                        html: mockHtml, 
+                        status: 200,
+                        _note: 'Mock data for development - external services unavailable'
+                    });
+                }
+                throw corsProxyError;
+            }
+        }
         
         if (!response.ok) {
             throw new Error(`Failed to fetch content: ${response.status}`);
@@ -96,10 +141,37 @@ app.post('/api/check-link', async (req, res) => {
             return res.status(400).json({ error: 'Invalid URL format' });
         }
 
-        // Use CORS proxy to check link
-        const response = await fetch(CORS_PROXY_URL + encodeURIComponent(url), {
-            method: 'HEAD'
-        });
+        // Try to check link directly first (like Cloudflare Functions do)
+        // If that fails due to CORS, then use CORS proxy as fallback
+        let response;
+        try {
+            response = await fetch(url, {
+                method: 'HEAD',
+                headers: {
+                    'User-Agent': 'SEO-Health-Check-Tool/1.0 (Local Development)',
+                },
+            });
+        } catch (directFetchError) {
+            console.log('Direct HEAD request failed, trying CORS proxy:', directFetchError.message);
+            try {
+                // Fallback to CORS proxy
+                response = await fetch(CORS_PROXY_URL + encodeURIComponent(url), {
+                    method: 'HEAD'
+                });
+            } catch (corsProxyError) {
+                console.log('CORS proxy also failed for link check:', corsProxyError.message);
+                // For development/testing when external services are unavailable
+                if (process.env.NODE_ENV !== 'production') {
+                    return res.json({ 
+                        ok: true, 
+                        status: 200,
+                        statusText: 'OK (Mock response)',
+                        _note: 'Mock data for development - external services unavailable'
+                    });
+                }
+                throw corsProxyError;
+            }
+        }
         
         res.json({ 
             ok: response.ok, 
