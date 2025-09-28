@@ -45,7 +45,29 @@ app.post('/api/pagespeed', async (req, res) => {
         res.json(data);
     } catch (error) {
         console.error('PageSpeed API error:', error);
-        res.status(500).json({ error: 'Failed to analyze page speed' });
+        
+        // Instead of returning 500 error, return a mock response that indicates
+        // the service is unavailable but allows the analysis to continue
+        const mockResponse = {
+            lighthouseResult: {
+                audits: {
+                    'speed-index': {
+                        displayValue: 'Service Unavailable',
+                        score: null
+                    },
+                    'total-byte-weight': {
+                        numericValue: 0
+                    },
+                    'largest-contentful-paint': {
+                        score: null
+                    }
+                }
+            },
+            _serviceStatus: 'unavailable',
+            _error: error.message
+        };
+        
+        res.json(mockResponse);
     }
 });
 
