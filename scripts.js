@@ -36,28 +36,32 @@
         async function performSEOAnalysis(url) {
             const issues = [];
             let score = 100;
-            const stats = {};
+            const stats = { loadTime: 'Service Unavailable', pageSize: 'Service Unavailable' };
 
             updateLoadingStatus('Fetching page content...');
 
             // 1. Fetch page content
             const pageData = await fetchPageContent(url);
             
-            // Show demo mode message if applicable
-            if (pageData.isDemo) {
-                updateLoadingStatus(pageData.message + ' - analyzing content...');
-            }
-            
             // 2. Analyze page speed
             updateLoadingStatus('Checking page speed...');
-            const speedData = await analyzePageSpeed(url);
-            if (speedData) {
+            try {
+                const speedData = await analyzePageSpeed(url);
                 stats.loadTime = speedData.loadTime;
                 stats.pageSize = speedData.pageSize;
                 if (speedData.issues.length > 0) {
                     issues.push(...speedData.issues);
                     score -= speedData.issues.length * 10;
                 }
+            } catch (error) {
+                // Add an issue to indicate PageSpeed service is unavailable
+                issues.push({
+                    type: 'critical',
+                    title: '🚫 PageSpeed Service Unavailable',
+                    description: 'Unable to analyze page performance metrics due to service unavailability.',
+                    guidance: `Error: ${error.message}. This prevents load time and page size analysis.`
+                });
+                score -= 20; // Penalty for missing critical data
             }
 
             // 3. Analyze HTML content
@@ -69,9 +73,20 @@
 
             // 4. Check for broken links
             updateLoadingStatus('Checking for broken links...');
-            const linkIssues = await checkLinks(pageData.html, url);
-            issues.push(...linkIssues);
-            score -= linkIssues.length * 12;
+            try {
+                const linkIssues = await checkLinks(pageData.html, url);
+                issues.push(...linkIssues);
+                score -= linkIssues.length * 12;
+            } catch (error) {
+                // Add an issue to indicate link checking service is unavailable
+                issues.push({
+                    type: 'warning',
+                    title: '🔗 Link Checking Service Unavailable',
+                    description: 'Unable to verify link validity due to service unavailability.',
+                    guidance: `Error: ${error.message}. Manual link verification recommended.`
+                });
+                score -= 10; // Penalty for missing link analysis
+            }
 
             scanResults = {
                 url,
@@ -85,11 +100,6 @@
         }
 
         async function fetchPageContent(url) {
-            // Demo mode for testing - if URL contains 'demo' or 'test'
-            if (url.toLowerCase().includes('demo') || url.toLowerCase().includes('test')) {
-                return getDemoContent(url);
-            }
-            
             try {
                 // Use backend API to fetch content (handles CORS automatically)
                 const response = await fetch('/api/fetch-content', {
@@ -101,95 +111,18 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`Backend fetch failed: ${response.status}`);
+                    throw new Error(`Backend fetch failed: ${response.status} - ${response.statusText}`);
                 }
                 
                 const data = await response.json();
                 return { html: data.html, status: data.status };
             } catch (error) {
-                // Fallback to demo content if fetching fails
-                console.warn('External fetch failed, using demo content for testing:', error);
-                return getDemoContent(url, true);
+                // No fallback - throw error to caller to handle properly
+                throw new Error(`Failed to fetch page content: ${error.message}`);
             }
         }
 
-        function getDemoContent(url, isFallback = false) {
-            // Check if URL suggests a perfect demo
-            const isPerfectDemo = url.includes('perfect') || url.includes('good');
-            
-            const demoHtml = isPerfectDemo ? `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfect SEO Demo - Complete Guide to Website Optimization</title>
-    <meta name="description" content="Perfectly optimized demonstration page showcasing ideal SEO elements including proper meta tags, heading structure, and schema markup.">
-    <link rel="canonical" href="${url}">
-</head>
-<body>
-    <h1>Perfect SEO Demonstration Page</h1>
-    <h2>Website Optimization Best Practices</h2>
-    <h3>Meta Tags and Structure</h3>
-    
-    <p>This page demonstrates excellent SEO practices with optimal meta descriptions, proper heading hierarchy, and comprehensive structured data implementation.</p>
-    
-    <img src="perfect-seo.jpg" alt="Perfect SEO implementation showing optimized meta tags and heading structure">
-    <img src="best-practices.jpg" alt="SEO best practices illustration with proper alt text attributes">
-    
-    <a href="/seo-guide">Internal SEO Guide</a>
-    <a href="https://search.google.com">External Search Engine</a>
-    
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Perfect SEO Demo Page",
-        "description": "A perfectly optimized demonstration page for SEO analysis testing",
-        "url": "${url}"
-    }
-    </script>
-</body>
-</html>` : `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Page - SEO Test${isFallback ? ' (Demo Mode)' : ''}</title>
-    <meta name="description" content="This is a demonstration page for testing the SEO Health Check Tool. It contains various SEO elements to validate the analysis functionality.">
-    <link rel="canonical" href="${url}">
-</head>
-<body>
-    <h1>SEO Demo Page${isFallback ? ' - Demo Mode Active' : ''}</h1>
-    <h2>Testing SEO Analysis</h2>
-    
-    <p>This page demonstrates various SEO elements including proper heading structure, meta tags, and structured data.</p>
-    
-    <img src="example-image.jpg" alt="Example image with proper alt text">
-    <img src="no-alt-image.jpg">
-    
-    <h1>Second H1 - This will trigger a warning</h1>
-    
-    <a href="/internal-page">Internal Link</a>
-    <a href="https://external-site.com">External Link</a>
-    
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "SEO Demo Page",
-        "description": "A demonstration page for SEO analysis"
-    }
-    </script>
-</body>
-</html>`;
-            
-            return { 
-                html: demoHtml, 
-                status: 200,
-                isDemo: true,
-                message: isFallback ? 'Using demo content due to network issues' : (isPerfectDemo ? 'Perfect SEO demo mode activated' : 'Demo mode activated')
-            };
-        }
+
 
         async function analyzePageSpeed(url) {
             try {
@@ -203,9 +136,8 @@
                 });
                 
                 if (!response.ok) {
-                    // If backend API fails, return null to skip PageSpeed analysis
-                    console.warn('PageSpeed API unavailable, skipping performance analysis');
-                    return null;
+                    // Return error information instead of null
+                    throw new Error(`PageSpeed API failed: ${response.status} - ${response.statusText}`);
                 }
 
                 const data = await response.json();
@@ -242,8 +174,8 @@
                 };
 
             } catch (error) {
-                console.warn('PageSpeed analysis failed, skipping performance metrics:', error);
-                return null;
+                // No fallback - throw error to indicate PageSpeed analysis failed
+                throw new Error(`PageSpeed analysis failed: ${error.message}`);
             }
         }
 
@@ -380,6 +312,7 @@
             // Check a sample of internal links (limit to 5 to avoid too many requests)
             const linksToCheck = internalLinks.slice(0, 5);
             const brokenLinks = [];
+            let apiFailureCount = 0;
 
             for (const link of linksToCheck) {
                 try {
@@ -392,15 +325,23 @@
                         body: JSON.stringify({ url: link })
                     });
                     
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (!data.ok && data.status >= 400) {
-                            brokenLinks.push(link);
-                        }
+                    if (!response.ok) {
+                        apiFailureCount++;
+                        continue;
+                    }
+                    
+                    const data = await response.json();
+                    if (!data.ok && data.status >= 400) {
+                        brokenLinks.push(link);
                     }
                 } catch (error) {
-                    console.warn('Could not check link:', link, error);
+                    apiFailureCount++;
                 }
+            }
+
+            // If all API calls failed, throw error to indicate service unavailability
+            if (apiFailureCount === linksToCheck.length && linksToCheck.length > 0) {
+                throw new Error('Link checking service is unavailable - unable to verify link validity');
             }
 
             if (brokenLinks.length > 0) {
