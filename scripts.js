@@ -171,6 +171,21 @@
                 }
 
                 const data = await response.json();
+                
+                // Check if service is unavailable
+                if (data._serviceStatus === 'unavailable') {
+                    return {
+                        loadTime: 'Service Unavailable',
+                        pageSize: 'Service Unavailable',
+                        issues: [{
+                            type: 'warning',
+                            title: '⚠️ PageSpeed Analysis Unavailable',
+                            description: 'Google PageSpeed Insights API is currently unavailable. Performance metrics cannot be retrieved.',
+                            guidance: 'Try again later when the service is available. SEO analysis will continue with other checks.'
+                        }]
+                    };
+                }
+                
                 const lighthouse = data.lighthouseResult;
                 const audits = lighthouse.audits;
                 
@@ -178,8 +193,8 @@
                 const loadTime = audits['speed-index']?.displayValue || 'Unknown';
                 const pageSize = Math.round(lighthouse.audits['total-byte-weight']?.numericValue / 1024) || 0;
 
-                // Check performance issues
-                if (audits['speed-index']?.score < 0.5) {
+                // Check performance issues only if we have valid data
+                if (audits['speed-index']?.score !== null && audits['speed-index']?.score < 0.5) {
                     issues.push({
                         type: 'critical',
                         title: '⚠️ Slow Page Load Speed',
@@ -188,7 +203,7 @@
                     });
                 }
 
-                if (audits['largest-contentful-paint']?.score < 0.5) {
+                if (audits['largest-contentful-paint']?.score !== null && audits['largest-contentful-paint']?.score < 0.5) {
                     issues.push({
                         type: 'warning',
                         title: '🖼️ Large Contentful Paint Issues',

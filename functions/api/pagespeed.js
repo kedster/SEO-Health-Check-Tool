@@ -106,11 +106,30 @@ export default async function handler(request, env, context) {
         
     } catch (error) {
         console.error('PageSpeed API error:', error);
-        return new Response(JSON.stringify({ 
-            error: 'Failed to analyze page speed',
-            details: error.message 
-        }), {
-            status: 500,
+        
+        // Instead of returning 500 error, return a mock response that indicates
+        // the service is unavailable but allows the analysis to continue
+        const mockResponse = {
+            lighthouseResult: {
+                audits: {
+                    'speed-index': {
+                        displayValue: 'Service Unavailable',
+                        score: null
+                    },
+                    'total-byte-weight': {
+                        numericValue: 0
+                    },
+                    'largest-contentful-paint': {
+                        score: null
+                    }
+                }
+            },
+            _serviceStatus: 'unavailable',
+            _error: error.message
+        };
+        
+        return new Response(JSON.stringify(mockResponse), {
+            status: 200,
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
