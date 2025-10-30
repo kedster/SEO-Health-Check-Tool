@@ -53,11 +53,20 @@ The SEO Health Check Tool is designed to democratize SEO analysis by providing a
 
 For the best performance and reliability, deploy this tool using Cloudflare Pages with built-in Functions:
 
-1. **[Deploy to Cloudflare Pages](https://dash.cloudflare.com/sign-up/pages)** - Connect your GitHub fork
-2. **Configure environment variables** - Add your PageSpeed API key
+1. **[Quick Setup (5 minutes)](CLOUDFLARE_SETUP.md)** - Step-by-step visual guide
+2. **[Full Deployment Guide](DEPLOYMENT.md)** - Complete instructions with all API configurations
 3. **Go live instantly** - Global CDN with automatic HTTPS
 
-📖 **[Full Deployment Guide](DEPLOYMENT.md)** - Complete setup instructions
+**What you'll get:**
+- ✅ Free hosting forever (Cloudflare free tier)
+- ✅ 400 SEO checks/day (PageSpeed API free tier)
+- ✅ Optional AI-powered recommendations (ChatGPT API)
+- ✅ No CORS issues with serverless functions
+- ✅ Global CDN for fast worldwide access
+
+📖 **New to Cloudflare?** Start with our [**Quick Setup Guide**](CLOUDFLARE_SETUP.md) (5 minutes!)
+
+📚 **Want all the details?** Read the [**Full Deployment Guide**](DEPLOYMENT.md) with API configuration
 
 ### 🎮 Live Demo
 
@@ -82,29 +91,36 @@ Test the tool with any valid website URL:
   - Chrome 60+ / Firefox 55+ / Safari 12+ / Edge 79+
 - **Internet connection** for fetching web pages and API calls
 - **Required**: Live backend services (Cloudflare Pages Functions or Node.js server)
-- **Optional**: [Google PageSpeed Insights API key](https://console.cloud.google.com/) for enhanced performance analysis
+- **Required**: [Google PageSpeed Insights API key](https://console.cloud.google.com/) - Free 400 queries/day
+- **Optional**: [OpenAI ChatGPT API key](https://platform.openai.com/) - $5 free credit for AI-powered recommendations
+- **Optional**: Other free API services documented in [DEPLOYMENT.md](DEPLOYMENT.md)
 
 > ⚠️ **Important**: This tool requires live backend services. Static-only hosting will not work as it needs server-side API calls to avoid CORS issues.
 
 ### Installation Options
 
-#### Option 1: Cloudflare Pages (Recommended)
+#### Option 1: Cloudflare Pages (Recommended) ⭐
 Deploy with built-in Functions for best performance and reliability:
 
-```bash
-# 1. Fork this repository to your GitHub account
-# 2. Connect to Cloudflare Pages
-# 3. Set PAGESPEED_API_KEY environment variable
-# 4. Deploy automatically
-```
+**Quick Start (5 minutes):**
+1. Fork this repository to your GitHub account
+2. Follow our [Quick Setup Guide](CLOUDFLARE_SETUP.md)
+3. Get your free PageSpeed API key
+4. Deploy and you're live!
 
-📖 **[Complete Cloudflare Pages Setup Guide](DEPLOYMENT.md)**
+**Full Setup (with all features):**
+- Follow the [Complete Deployment Guide](DEPLOYMENT.md)
+- Configure ChatGPT API for AI recommendations
+- Set up additional free APIs for enhanced analysis
+- Custom domain setup included
 
 **Benefits:**
 - ✅ No CORS issues - Functions handle API calls server-side
 - ✅ Global CDN - Lightning fast worldwide
 - ✅ Auto HTTPS - SSL certificates included
 - ✅ Secure API keys - Environment variables protected
+- ✅ 500 builds/month free - Unlimited bandwidth
+- ✅ ChatGPT integration - AI-powered SEO recommendations
 
 #### Option 2: Local Development (Node.js)
 For development and testing:
@@ -124,8 +140,10 @@ For development and testing:
    # Copy environment template
    cp .env.example .env
    
-   # Edit .env and add your PageSpeed API key
-   # PAGESPEED_API_KEY=your_actual_api_key_here
+   # Edit .env and add your API keys:
+   # - PAGESPEED_API_KEY (required for performance metrics)
+   # - OPENAI_API_KEY (optional for AI recommendations)
+   # See .env.example for all available options
    ```
 
 4. **Start the server:**
@@ -140,10 +158,36 @@ For development and testing:
 ### API Setup (Handled by Backend)
 The application includes secure backend services that handle API keys:
 
-1. Get a Google PageSpeed Insights API key from [Google Cloud Console](https://console.cloud.google.com/)
-2. Enable the PageSpeed Insights API for your project  
-3. Set the `PAGESPEED_API_KEY` environment variable (Cloudflare Pages) or update `.env` file (Node.js)
-4. The backend securely handles all API requests without exposing keys to the frontend
+**Required API:**
+1. **Google PageSpeed Insights API** ([Setup Guide](DEPLOYMENT.md#1-google-pagespeed-insights-api-required))
+   - Get key from [Google Cloud Console](https://console.cloud.google.com/)
+   - Free tier: 400 queries/day
+   - Enable the PageSpeed Insights API
+   - Create API credentials
+
+**Optional APIs for Enhanced Features:**
+2. **OpenAI ChatGPT API** ([Setup Guide](DEPLOYMENT.md#2-openai-chatgpt-api-optional))
+   - Get key from [OpenAI Platform](https://platform.openai.com/api-keys)
+   - $5 free credits for new users (~2,500 analyses)
+   - Provides AI-powered SEO recommendations
+   - Cost after free tier: ~$0.002 per analysis
+
+3. **Google Search Console API** ([Setup Guide](DEPLOYMENT.md#3-google-search-console-api-optional))
+   - Completely free, unlimited usage
+   - Access search analytics data
+   - View indexed pages and search queries
+
+4. **W3C Validator & SSL Labs** ([Free, No Key Required](DEPLOYMENT.md#4-w3c-markup-validator-optional))
+   - HTML/CSS validation
+   - SSL/TLS security testing
+   - Public APIs with rate limits
+
+**Configuration:**
+- For **Cloudflare Pages**: Set environment variables in dashboard ([Guide](CLOUDFLARE_SETUP.md))
+- For **Local Node.js**: Update `.env` file with your API keys ([Example](.env.example))
+- The backend securely handles all API requests without exposing keys to the frontend
+
+📖 **Complete API setup instructions:** See [DEPLOYMENT.md - API Configuration](DEPLOYMENT.md#-api-configuration)
 
 ## 💻 Usage
 
