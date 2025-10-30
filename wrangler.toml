@@ -9,8 +9,19 @@ command = "echo 'No build required for static site'"
 publish = "."
 
 # Environment Variables (configure in Cloudflare Dashboard)
+# Go to: Pages > Your Project > Settings > Environment variables
 [env.production.vars]
-# Set PAGESPEED_API_KEY in Cloudflare Pages dashboard under Settings > Environment variables
+# Required:
+# - PAGESPEED_API_KEY: Google PageSpeed Insights API key
+#
+# Optional (for enhanced features):
+# - OPENAI_API_KEY: ChatGPT API for AI-powered SEO recommendations
+# - GOOGLE_SEARCH_CONSOLE_CLIENT_ID: Google Search Console integration
+# - GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET: Google Search Console integration
+#
+# Note: Do NOT store actual API keys in this file!
+# Add them via Cloudflare Dashboard: Settings > Environment variables
 
 [env.preview.vars]
 # Preview environment variables (optional)
+# Add same variables here if you want them available in preview deployments
