@@ -60,3 +60,6 @@ build/
 # CI/CD artifacts
 .github/workflows/artifacts/
 .github/actions/*/node_modules/
+
+# Reports data (keep HTML files, exclude JSON data)
+reports/data/*.json

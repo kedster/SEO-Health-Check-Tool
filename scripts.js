@@ -97,6 +97,36 @@
                     issuesFound: issues.length
                 }
             };
+            
+            // Save report to generate static page
+            await saveReport(scanResults);
+        }
+        
+        async function saveReport(results) {
+            try {
+                const response = await fetch('/api/save-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: results.url,
+                        score: results.score,
+                        issues: results.issues,
+                        stats: results.stats
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    // Store report URL for later display
+                    scanResults.reportUrl = data.reportUrl;
+                    scanResults.totalReports = data.totalReports;
+                }
+            } catch (error) {
+                console.log('Could not save report:', error.message);
+                // Don't throw error as this is not critical for the main analysis
+            }
         }
 
         async function fetchPageContent(url) {
@@ -405,7 +435,58 @@
                 });
             }
 
+            // Add static report URL if available
+            if (scanResults.reportUrl) {
+                const reportCard = document.createElement('div');
+                reportCard.className = 'issue-card report-link';
+                reportCard.innerHTML = `
+                    <div class="issue-header good">
+                        📊 Static SEO Report Generated
+                    </div>
+                    <div class="issue-body">
+                        <div class="issue-description">
+                            Your SEO analysis has been saved as a permanent, shareable report.
+                            ${scanResults.totalReports > 1 ? `This is analysis #${scanResults.totalReports} for this domain.` : ''}
+                        </div>
+                        <div class="guidance">
+                            🔗 <strong>Share this report:</strong> 
+                            <a href="${scanResults.reportUrl}" target="_blank" rel="noopener" 
+                               style="color: #667eea; text-decoration: none; font-weight: bold;">
+                               ${window.location.origin}${scanResults.reportUrl}
+                            </a>
+                            <button onclick="copyReportUrl('${window.location.origin}${scanResults.reportUrl}')" 
+                                    style="margin-left: 10px; padding: 4px 8px; background: #667eea; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                                📋 Copy
+                            </button>
+                        </div>
+                    </div>
+                `;
+                issuesGrid.appendChild(reportCard);
+            }
+
             document.getElementById('resultsDiv').classList.add('active');
+        }
+        
+        function copyReportUrl(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                // Show temporary success message
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.style.background = '#28a745';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#667eea';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
         }
 
         function createIssueCard(issue) {
